@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QMainWindow, QRadioButton
 from gui import Ui_MainWindow
+import csv
+import random
 
 
 class Logic(QMainWindow, Ui_MainWindow):
@@ -21,6 +23,13 @@ class Logic(QMainWindow, Ui_MainWindow):
         """The submit button on the GUI. Submits and collects the response data."""
         selected_button: QRadioButton = None
         candidate_name: str = ""
+        name: str = self.name_title.text()
+        voter_id: int = random.randint(24, 999999)
+
+        if name == "".strip():
+            self.result_label.setText(f'\tPlease enter your name.')
+            return
+
 
         if self.amy_button.isChecked():
             self.amy_count += 1
@@ -39,8 +48,12 @@ class Logic(QMainWindow, Ui_MainWindow):
             selected_button = self.ben_button
             candidate_name = "Ben Dianca"
 
+        with open('data.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([name, candidate_name, voter_id])
+
         if selected_button:
-            self.result_label.setText(f'     Your response has been submitted.\n     You picked: {candidate_name}')
+            self.result_label.setText(f'     Your response has been submitted.\n     You picked: {candidate_name}\n     Your Voter ID is: {voter_id}')
         else:
             self.result_label.setText(f'\tPlease select a candidate.')
 
